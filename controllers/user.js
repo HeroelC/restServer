@@ -1,38 +1,67 @@
 const { response, request } = require('express');
 
-const userGet = (req = request, res = response) => {
+const User = require('../models/user');
+const bcryptjs = require('bcryptjs');
+
+const userGet = async(req = request, res = response) => {
 
     const query = req.query;
 
+    const users = await User.find();
+
     res.json({
         msg: 'get API - Controller',
-        query
+        users
     });
 }
 
-const userPost = (req, res) => {
+const userPost = async(req, res) => {
 
-    const body = req.body;
+    const { name, mail, password, role } = req.body;
+    const user = new User( { name, mail, password, role } );
+
+    /** 
+     * Encriptar la contraseña
+     * Por defecto el genSaltSync esta en 10, mientras más alto el numero mayor seguridad
+     *  y mayor procesamiento del servidor
+     * **/ 
+    const salt = bcryptjs.genSaltSync();
+    user.password = bcryptjs.hashSync( password, salt);
+
+    // Guardar en database
+    await user.save();
 
     res.json({
-        msg: 'post API - Controller',
-        body
+        msg: 'Usuario creado con exito',
+        user
     });
 }
 
-const userPut = (req, res) => {
+const userPut = async(req, res) => {
 
-    const id = req.params.id;
+    const { id } = req.params;
+    const { _id, password, googleUser, mail, ...restParams} = req.body;
+
+    if( password ){
+        const salt = bcryptjs.genSaltSync();
+        restParams.password = bcryptjs.hashSync( password, salt);
+    }
+
+    const usuario = await User.findByIdAndUpdate( id, restParams);
 
     res.json({
-        msg: 'put API',
-        id
+        msg: 'Usuario actualizado con exito',
+        usuario
     });
 }
 
 const userDelete = (req, res) => {
+
+    const { id } = req.params;
+
     res.json({
-        msg: 'delete API'
+        msg: 'delete API',
+        id
     });
 }
 

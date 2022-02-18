@@ -22,5 +22,6 @@ Instalar [Nodemon] de manera global ``` npm install -g nodemon ``` y ejecutar ``
 - [NPM Mongoose](https://www.npmjs.com/package/mongoose)
 - [NPM Bcrypt.js](https://www.npmjs.com/package/bcryptjs)
 - [NPM Express Validator](https://www.npmjs.com/package/express-validator)
+- [NPM Express FileUpload](https://www.npmjs.com/package/express-fileupload)
 
 [Nodemon]: <https://www.npmjs.com/package/nodemon>
